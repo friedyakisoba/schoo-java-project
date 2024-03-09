@@ -1,92 +1,99 @@
-public class HList implements HListI {
-    private HNode head;
+import java.util.Scanner;
 
-    public HList() {
+public class ListingRE {
+    public static void main(String[] args) {
+        HList houseList = new HList();
+        Scanner userInput = new Scanner(System.in);
+        int userChoice = -1;
 
-        head = null;
+        do {
+            displayMenu();
 
-    }
-
-    @Override
-    public void addHouse(House h) {
-
-        HNode newNode = new HNode();
-        newNode.setHouse(h);
-
-        if (head == null) {
-            head = newNode;
-        } else {
-            HNode current = head;
-            while (current.getNext() != null) {
-                current = current.getNext();
-
-            }
-            current.setNext(newNode);
-        }
-
-    }
-
-    @Override
-    public void removeHouse(int mls) {
-        HNode current = head;
-        HNode prev = null;
-
-        while (current != null && current.getHouse().getMls() != mls) {
-            prev = current;
-            current = current.getNext();
-
-        }
-
-        if (current != null) {
-            if (prev == null) {
-                head = current.getNext();
-            } else {
-                prev.setNext(current.getNext());
-            }
-        } else {
-            System.out.println("House With MLS" + mls + "Not Found.");
-        }
-
-    }
-
-    @Override
-    public void printAll() {
-        HNode current = head;
-
-        while (current != null) {
-            System.out.println(current.getHouse());
-            current = current.getNext();
-        }
-
-    }
-
-    @Override
-    public void printLower(double price) {
-
-        HNode current = head;
-
-        while (current != null) {
-            if (current.getHouse().getPrice() < price) {
-                System.out.println(current.getHouse());
-
+            try {
+                userChoice = userInput.nextInt();
+                userInput.nextLine();
+            } catch (Exception e) {
+                System.out.println("Invalid Input");
+                System.out.println("Please enter a choice from 0 - 4");
+                userInput.nextLine();
+                continue;
             }
 
-            current = current.getNext();
+            switch (userChoice) {
+                case 1:
+                    addHouse(userInput, houseList);
+                    break;
+                case 2:
+                    removeHouse(userInput, houseList);
+                    break;
 
-        }
+                case 3:
+                    printHousesBelowPrice(userInput, houseList);
+                    break;
 
-    }
+                case 4:
+                    printAllHouses(houseList);
+                    break;
 
-    public boolean containsMLS(int mls) {
-        HNode current = head;
-
-        while (current != null) {
-            if (current.getHouse().getMls() == mls) {
-                return true;
+                case 0:
+                    System.out.println("Program ended.");
+                    break;
+                default:
+                    System.out.println("Invalid Input.");
+                    System.out.println("Please enter a number between 0 and 4.");
             }
-            current = current.getNext();
-        }
-        return false;
+
+        } while (userChoice != 0);
     }
 
+    private static void displayMenu() {
+        System.out.println("1. Add a house");
+        System.out.println("2. Remove a house");
+        System.out.println("3. Print houses that cost less than a given price");
+        System.out.println("4. Print all the houses");
+        System.out.println("0. End this program");
+        System.out.print("Enter your choice: ");
+    }
+
+    private static void addHouse(Scanner userInput, HList houseList) {
+        System.out.println("Enter MLS: ");
+        int mls = userInput.nextInt();
+
+        if (houseList.containsMLS(mls)) {
+            System.out.println("House with MLS" + mls + "already listed.");
+        }
+        System.out.println("Enter bedrooms: ");
+        int bedrooms = userInput.nextInt();
+
+        System.out.println("Enter Price: ");
+        double price = userInput.nextDouble();
+
+        System.out.println("Enter seller name: ");
+        userInput.nextLine();
+        String seller = userInput.nextLine();
+
+        try {
+            House newListHouse = new House(mls, bedrooms, price, seller);
+            houseList.addHouse(newListHouse);
+            System.out.println("House Listed!");
+        } catch (HouseException e) {
+            System.out.println("Exeption: " + e.getMessage());
+        }
+    }
+
+    private static void removeHouse(Scanner userInput, HList houseList) {
+        System.out.println("Enter MLS of the house to remove: ");
+        int removeListing = userInput.nextInt();
+        houseList.removeHouse(removeListing);
+    }
+
+    private static void printHousesBelowPrice(Scanner userInput, HList houseList) {
+        System.out.println("Enter the max price: ");
+        double maxPrice = userInput.nextDouble();
+        houseList.printLower(maxPrice);
+    }
+
+    private static void printAllHouses(HList houseList) {
+        houseList.printAll();
+    }
 }
