@@ -4,11 +4,11 @@ public class ListingRE {
     public static void main(String[] args) {
         HList houseList = new HList();
         Scanner userInput = new Scanner(System.in);
-        int userChoice;
+        int userChoice = -1; 
 
         do {
             displayMenu();
-            
+
             try {
                 userChoice = userInput.nextInt();
                 userInput.nextLine(); 
@@ -52,14 +52,15 @@ public class ListingRE {
         System.out.print("Enter your choice: ");
     }
 
-
-    private static void addHouse(Scanner userInput, HList houseList){
+    private static void addHouse(Scanner userInput, HList houseList) {
         System.out.println("Enter MLS: ");
         int mls = userInput.nextInt();
 
-        if (houseList.containsMLS(mls)){
-            System.out.println("House with MLS" + mls + "already listed.");
+        if (houseList.containsMLS(mls)) {
+            System.out.println("House with MLS " + mls + " already listed.");
+            return;
         }
+
         System.out.println("Enter bedrooms: ");
         int bedrooms = userInput.nextInt();
 
@@ -67,7 +68,7 @@ public class ListingRE {
         double price = userInput.nextDouble();
 
         System.out.println("Enter seller name: ");
-        userInput.nextLine();
+        userInput.nextLine(); // Clear the buffer
         String seller = userInput.nextLine();
 
         try {
@@ -75,23 +76,23 @@ public class ListingRE {
             houseList.addHouse(newListHouse);
             System.out.println("House Listed!");
         } catch (HouseException e) {
-            System.out.println("Exeption: " + e.getMessage());
+            System.out.println("Exception: " + e.getMessage());
         }
     }
-    
-    private static void removeHouse (Scanner userInput, HList houseList){
+
+    private static void removeHouse(Scanner userInput, HList houseList) {
         System.out.println("Enter MLS of the house to remove: ");
         int removeListing = userInput.nextInt();
         houseList.removeHouse(removeListing);
     }
 
-    private static void printHousesBelowPrice (Scanner userInput, HList houseList){
+    private static void printHousesBelowPrice(Scanner userInput, HList houseList) {
         System.out.println("Enter the max price: ");
         double maxPrice = userInput.nextDouble();
         houseList.printLower(maxPrice);
     }
 
-    private static void printAllHouses (HList houseList) {
+    private static void printAllHouses(HList houseList) {
         houseList.printAll();
     }
 }
